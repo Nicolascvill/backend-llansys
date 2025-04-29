@@ -20,11 +20,14 @@ export class UsersService {
     }
 
     async updateRefreshToken(userId: number, refreshToken: string): Promise<void> {
-        await this.usersRepository.update(userId, { refreshToken });
+        const user = await this.findById(userId);
+        if (user?.refreshToken !== refreshToken) {
+            await this.usersRepository.update(userId, { refreshToken });
+        }
     }
 
     async removeRefreshToken(userId: number): Promise<void> {
-        await this.usersRepository.update(userId, { refreshToken: '' });        
+        await this.usersRepository.update(userId, { refreshToken: '' });
     }
 
     async findById(id: number): Promise<User | null> {
@@ -34,4 +37,9 @@ export class UsersService {
     async findByRefreshToken(refreshToken: string): Promise<User | null> {
         return this.usersRepository.findOne({ where: { refreshToken } });
     }
+
+    async updateSessionId(userId: number, sessionId: string): Promise<void> {
+        await this.usersRepository.update(userId, { sessionId })
+    }
+    
 }
